@@ -4,6 +4,7 @@ import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Guide from './components/Guide';
 import Onboarding from './components/Onboarding';
+import ConnectApis from './components/ConnectApis';
 
 // Guard: if onboarding not complete, send to /onboarding
 function DashboardGuard() {
@@ -17,6 +18,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/guide" element={<Guide />} />
+                <Route path="/connect" element={<ConnectApis />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/dashboard" element={<DashboardGuard />} />
             </Routes>

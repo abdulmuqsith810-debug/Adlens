@@ -193,7 +193,7 @@ export default function LandingPage() {
                             <li>✅ Hourly & Daily views</li>
                             <li>✅ Spend efficiency calculator</li>
                         </ul>
-                        <a href="#xflow-checkout" className="btn-secondary pricing-btn">Start Free Trial</a>
+                        <Link to="/connect" className="btn-secondary pricing-btn">Start Free Trial</Link>
                     </div>
                     <div className="pricing-card featured">
                         <div className="pricing-pill">Most Popular</div>
