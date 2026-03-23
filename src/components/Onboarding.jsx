@@ -17,7 +17,7 @@ function BlockedScreen() {
             <h1 className="blocked-title">This product is not built for this type of data</h1>
             <div className="blocked-message">
                 <p>
-                    AttributeIQ's attribution model is highly specialized. Based on your selections, our platform is not calibrated for your specific business category or product type.
+                    Adlens's attribution model is highly specialized. Based on your selections, our platform is not calibrated for your specific business category or product type.
                 </p>
                 <p>
                     If we processed your data, the dashboard would show highly inaccurate attribution numbers and spend efficiency metrics. To prevent misleading insights, we cannot create an account for this business type at this time.
@@ -158,7 +158,7 @@ export default function Onboarding() {
             <header className="landing-header">
                 <div className="logo">
                     <span className="logo-icon">◈</span>
-                    <span className="logo-text">AttributeIQ</span>
+                    <span className="logo-text">Adlens</span>
                 </div>
                 <Link to="/" className="nav-link" style={{ marginLeft: 'auto' }}>← Back to Home</Link>
             </header>
@@ -186,7 +186,7 @@ export default function Onboarding() {
                 {step === STEPS.BUSINESS_TYPE && (
                     <div className="onboarding-card">
                         <h2 className="onboarding-title">What type of business are you?</h2>
-                        <p className="onboarding-subtitle">This is mandatory. AttributeIQ's attribution model is designed for specific business types.</p>
+                        <p className="onboarding-subtitle">This is mandatory. Adlens's attribution model is designed for specific business types.</p>
                         <div className="onboarding-options">
                             {BUSINESS_TYPES.map(type => (
                                 <label key={type.value} className={`option-card ${businessType === type.value ? 'selected' : ''}`}>
@@ -256,7 +256,7 @@ export default function Onboarding() {
                     <div className="onboarding-card">
                         <h2 className="onboarding-title">Data Compatibility Check</h2>
                         <p className="onboarding-subtitle">
-                            AttributeIQ's algorithms are calibrated for specific merchant verticals. Please read each statement carefully and check any that apply to your business.
+                            Adlens's algorithms are calibrated for specific merchant verticals. Please read each statement carefully and check any that apply to your business.
                             <strong> If any statement is true for your business, our system cannot accurately process your data.</strong>
                         </p>
 

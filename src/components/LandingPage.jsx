@@ -8,7 +8,7 @@ export default function LandingPage() {
             <header className="landing-header">
                 <div className="logo">
                     <span className="logo-icon">◈</span>
-                    <span className="logo-text">AttributeIQ</span>
+                    <span className="logo-text">Adlens</span>
                 </div>
                 <nav className="landing-nav">
                     <Link to="/guide" className="nav-link">How It Works</Link>
@@ -27,7 +27,7 @@ export default function LandingPage() {
                         Which Ad Worked?
                     </h1>
                     <p className="hero-subtitle">
-                        Google Ads and Facebook Ads both report conversions — but they each count the same sale as their own win. AttributeIQ connects your <strong>Stripe revenue to your actual GA4 click data</strong> so you can see which platform genuinely earned its spend.
+                        Google Ads and Facebook Ads both report conversions — but they each count the same sale as their own win. Adlens connects your <strong>Stripe revenue to your actual GA4 click data</strong> so you can see which platform genuinely earned its spend.
                     </p>
                     <div className="hero-truth-box">
                         <span className="truth-icon">📖</span>
@@ -48,7 +48,7 @@ export default function LandingPage() {
                             <span className="dot red"></span>
                             <span className="dot yellow"></span>
                             <span className="dot green"></span>
-                            <span className="preview-title-text">AttributeIQ — Dashboard Preview</span>
+                            <span className="preview-title-text">Adlens — Dashboard Preview</span>
                         </div>
                         <div className="preview-body">
                             <div className="preview-stat-row">
@@ -91,7 +91,7 @@ export default function LandingPage() {
 
             {/* ── WHAT WE DO ── */}
             <section className="steps-section">
-                <h2 className="section-title">How AttributeIQ Works</h2>
+                <h2 className="section-title">How Adlens Works</h2>
                 <p className="section-subtitle">No black boxes. Here is exactly what happens with your data.</p>
                 <div className="steps-grid">
                     <div className="step-card">
@@ -158,7 +158,7 @@ export default function LandingPage() {
                         <span className="limitation-icon">⚠️</span>
                         <div>
                             <strong>Not a replacement for your ad platform data</strong>
-                            <p>AttributeIQ helps you compare platform efficiency using your Stripe revenue. It does not replace Google Ads or Facebook Ads Manager reporting.</p>
+                            <p>Adlens helps you compare platform efficiency using your Stripe revenue. It does not replace Google Ads or Facebook Ads Manager reporting.</p>
                         </div>
                     </div>
                     <div className="limitation-item">
@@ -196,7 +196,7 @@ export default function LandingPage() {
                         <Link to="/dashboard" className="btn-secondary pricing-btn">Try Demo</Link>
                     </div>
                     <div className="pricing-card featured">
-                        <div className="pricing-pill">Full Access</div>
+                        <div className="pricing-pill">14-Day Free Trial</div>
                         <div className="pricing-plan-name">Pro</div>
                         <div className="pricing-price">$29<span>/month</span></div>
                         <ul className="pricing-features">
@@ -206,7 +206,7 @@ export default function LandingPage() {
                             <li>✅ Hourly & Daily views</li>
                             <li>✅ Spend efficiency calculator</li>
                         </ul>
-                        <a href="#xflow-checkout" className="btn-primary pricing-btn">Subscribe via xFlow</a>
+                        <a href="#xflow-checkout" className="btn-primary pricing-btn">Start 14-Day Free Trial</a>
                     </div>
                 </div>
             </section>
@@ -215,9 +215,9 @@ export default function LandingPage() {
             <footer className="landing-footer">
                 <div className="footer-logo">
                     <span className="logo-icon">◈</span>
-                    <span className="logo-text">AttributeIQ</span>
+                    <span className="logo-text">Adlens</span>
                 </div>
-                <p className="footer-copy">© 2026 AttributeIQ. Powered by Cloudflare Workers.</p>
+                <p className="footer-copy">© 2026 Adlens. Powered by Cloudflare Workers.</p>
                 <div className="footer-links">
                     <Link to="/guide">Guide</Link>
                     <a href="#privacy">Privacy Policy</a>

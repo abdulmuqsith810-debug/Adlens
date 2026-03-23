@@ -54,7 +54,7 @@ export default function Dashboard() {
                     </button>
                     <div className="logo">
                         <span className="logo-icon">◈</span>
-                        <span className="logo-text">AttributeIQ</span>
+                        <span className="logo-text">Adlens</span>
                     </div>
                     <span className="header-tagline">Marketing Attribution Dashboard</span>
                 </div>
@@ -169,7 +169,7 @@ export default function Dashboard() {
 
                     {/* Footer */}
                     <footer className="dash-footer">
-                        <span>AttributeIQ — Data from Google Analytics 4 + Stripe · Powered by Cloudflare Workers</span>
+                        <span>Adlens — Data from Google Analytics 4 + Stripe · Powered by Cloudflare Workers</span>
                         <span className="footer-note">⚠ Revenue shown is total store revenue, not platform-specific</span>
                     </footer>
                 </main>

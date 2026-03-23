@@ -70,7 +70,7 @@ export const BUSINESS_TYPES = [
         value: 'service',
         label: '🤝 Service Business — Agency, freelance, consulting',
         supported: false,
-        note: 'AttributeIQ is built for product-based businesses. Service businesses have a different customer journey — revenue attribution through GA4 and Stripe may not reflect your actual acquisition costs accurately.',
+        note: 'Adlens is built for product-based businesses. Service businesses have a different customer journey — revenue attribution through GA4 and Stripe may not reflect your actual acquisition costs accurately.',
     },
     {
         value: 'subscription',
@@ -82,7 +82,7 @@ export const BUSINESS_TYPES = [
         value: 'other',
         label: '🏢 Other business type',
         supported: false,
-        note: 'AttributeIQ is optimised for product-based ecommerce and digital businesses. Your business type may produce inaccurate attribution data. We recommend verifying all figures independently.',
+        note: 'Adlens is optimised for product-based ecommerce and digital businesses. Your business type may produce inaccurate attribution data. We recommend verifying all figures independently.',
     },
 ];
 

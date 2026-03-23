@@ -217,7 +217,7 @@ export default function Guide() {
             <header className="landing-header">
                 <div className="logo">
                     <span className="logo-icon">◈</span>
-                    <span className="logo-text">AttributeIQ</span>
+                    <span className="logo-text">Adlens</span>
                 </div>
                 <nav className="landing-nav">
                     <Link to="/" className="nav-link">Home</Link>
@@ -278,9 +278,9 @@ export default function Guide() {
             <footer className="landing-footer">
                 <div className="footer-logo">
                     <span className="logo-icon">◈</span>
-                    <span className="logo-text">AttributeIQ</span>
+                    <span className="logo-text">Adlens</span>
                 </div>
-                <p className="footer-copy">© 2026 AttributeIQ. Powered by Cloudflare Workers.</p>
+                <p className="footer-copy">© 2026 Adlens. Powered by Cloudflare Workers.</p>
                 <div className="footer-links">
                     <Link to="/">Home</Link>
                     <Link to="/dashboard">Dashboard</Link>
