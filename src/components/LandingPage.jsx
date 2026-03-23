@@ -184,21 +184,8 @@ export default function LandingPage() {
                 <p className="section-subtitle">Try it free with demo data. Subscribe when you are ready to connect your own accounts.</p>
                 <div className="pricing-grid">
                     <div className="pricing-card">
-                        <div className="pricing-plan-name">Free</div>
-                        <div className="pricing-price">$0<span>/month</span></div>
-                        <ul className="pricing-features">
-                            <li>✅ Demo dashboard (mock data)</li>
-                            <li>✅ Guide & documentation</li>
-                            <li>✅ See all features in demo mode</li>
-                            <li>❌ Live Stripe data connection</li>
-                            <li>❌ Live GA4 data connection</li>
-                        </ul>
-                        <Link to="/dashboard" className="btn-secondary pricing-btn">Try Demo</Link>
-                    </div>
-                    <div className="pricing-card featured">
-                        <div className="pricing-pill">14-Day Free Trial</div>
-                        <div className="pricing-plan-name">Pro</div>
-                        <div className="pricing-price">$29<span>/month</span></div>
+                        <div className="pricing-plan-name">14-Day Trial</div>
+                        <div className="pricing-price">$0<span>/14 days</span></div>
                         <ul className="pricing-features">
                             <li>✅ Live Stripe data connection</li>
                             <li>✅ Live GA4 data connection</li>
@@ -206,7 +193,20 @@ export default function LandingPage() {
                             <li>✅ Hourly & Daily views</li>
                             <li>✅ Spend efficiency calculator</li>
                         </ul>
-                        <a href="#xflow-checkout" className="btn-primary pricing-btn">Start 14-Day Free Trial</a>
+                        <a href="#xflow-checkout" className="btn-secondary pricing-btn">Start Free Trial</a>
+                    </div>
+                    <div className="pricing-card featured">
+                        <div className="pricing-pill">Most Popular</div>
+                        <div className="pricing-plan-name">Pro</div>
+                        <div className="pricing-price">$29<span>/month</span></div>
+                        <ul className="pricing-features">
+                            <li>✅ Live Stripe API connection</li>
+                            <li>✅ Live GA4 API connection</li>
+                            <li>✅ Unlimited data processing</li>
+                            <li>✅ Hourly & Daily views</li>
+                            <li>✅ Ad spend efficiency tracker</li>
+                        </ul>
+                        <a href="#xflow-checkout" className="btn-primary pricing-btn">Subscribe via xFlow</a>
                     </div>
                 </div>
             </section>
