@@ -23,33 +23,33 @@ export const HARAM_MCC_CODES = {
     '7011': 'Hotels, Motels (primary business is alcohol/entertainment)',
 };
 
-// Haram self-declaration items (user must deny all of these)
+// Haram self-declaration items (user must deny all of these, framed as data compatibility checks)
 export const HARAM_DECLARATIONS = [
     'My business sells or promotes alcohol, beer, wine, or spirits',
-    'My business sells pork or pork-derived products (gelatin, lard, etc.)',
+    'My business sells pork or pork-derived products',
     'My business is involved in gambling, betting, or lotteries',
     'My business sells adult or explicit content',
-    'My business provides interest-based financial products (loans, mortgages, credit, riba)',
+    'My business provides interest-bearing financial products (loans, mortgages, credit)',
     'My business sells tobacco, cigarettes, or vaping products',
-    'My business sells non-halal meat or meat-derived products',
+    'My business sells uncertified meat or meat-derived products',
     'My business is involved in weapons manufacturing or retail sales',
 ];
 
-// Ecommerce product categories that are halal-compatible
+// Ecommerce product categories that are supported
 export const HALAL_ECOMMERCE_CATEGORIES = [
     { value: 'clothing', label: 'Clothing & Fashion' },
     { value: 'electronics', label: 'Electronics & Gadgets' },
-    { value: 'halal_food', label: 'Food & Beverages (Halal-certified)' },
+    { value: 'food', label: 'Food & Beverages' },
     { value: 'health', label: 'Health & Wellness (Non-pharmaceutical)' },
-    { value: 'beauty', label: 'Beauty & Personal Care (Halal)' },
+    { value: 'beauty', label: 'Beauty & Personal Care' },
     { value: 'home', label: 'Home & Garden' },
     { value: 'baby', label: 'Baby & Kids Products' },
     { value: 'sports', label: 'Sports & Outdoors' },
     { value: 'books', label: 'Books, Education & Stationery' },
-    { value: 'islamic', label: 'Islamic Products (Quran, prayer items, etc.)' },
+    { value: 'religious', label: 'Religious Products (Prayer items, texts, etc.)' },
     { value: 'crafts', label: 'Arts, Crafts & Collectibles' },
-    { value: 'pets', label: 'Pet Supplies (Halal-permissible)' },
-    { value: 'other_halal', label: 'Other (Halal product)' },
+    { value: 'pets', label: 'Pet Supplies' },
+    { value: 'other', label: 'Other' },
 ];
 
 // Business types — supported vs. inaccurate-data warning

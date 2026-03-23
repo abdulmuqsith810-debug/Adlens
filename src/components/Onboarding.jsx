@@ -251,17 +251,17 @@ export default function Onboarding() {
                     </div>
                 )}
 
-                {/* ── Step 3: Haram Declaration ── */}
+                {/* ── Step 3: Data Compatibility Declaration ── */}
                 {step === STEPS.HARAM_CHECK && (
                     <div className="onboarding-card">
-                        <h2 className="onboarding-title">Final compliance check</h2>
+                        <h2 className="onboarding-title">Data Compatibility Check</h2>
                         <p className="onboarding-subtitle">
-                            AttributeIQ is a halal SaaS product. Please read each statement carefully and check any that apply to your business.
-                            <strong> If any statement is true for your business, we will be unable to provide service.</strong>
+                            AttributeIQ's algorithms are calibrated for specific merchant verticals. Please read each statement carefully and check any that apply to your business.
+                            <strong> If any statement is true for your business, our system cannot accurately process your data.</strong>
                         </p>
 
                         <div className="declaration-notice">
-                            📖 <strong>By submitting this form, you declare these answers are truthful.</strong> Providing false information to gain access to a service built on Islamic principles is a serious matter. We trust you to be honest.
+                            📖 <strong>By submitting this form, you verify these answers are accurate.</strong> Providing incorrect categorization will result in corrupted attribution metrics in your dashboard.
                         </div>
 
                         <div className="declaration-list">
@@ -280,7 +280,7 @@ export default function Onboarding() {
 
                         <div className="stripe-note">
                             <span>🔗</span>
-                            <p>When you connect your Stripe account, we will also automatically check your registered Merchant Category Code (MCC) against our blocked business list. If your MCC matches a prohibited category, access will be revoked regardless of the above declarations.</p>
+                            <p>When you connect your Stripe account, we automatically verify your Merchant Category Code (MCC) for data model compatibility. Unsupported business categories will not be able to load the dashboard.</p>
                         </div>
 
                         <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
