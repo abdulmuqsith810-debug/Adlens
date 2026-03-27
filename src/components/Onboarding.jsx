@@ -254,14 +254,13 @@ export default function Onboarding() {
                 {/* ── Step 3: Data Compatibility Declaration ── */}
                 {step === STEPS.HARAM_CHECK && (
                     <div className="onboarding-card">
-                        <h2 className="onboarding-title">Data Compatibility Check</h2>
+                        <h2 className="onboarding-title">Platform Compatibility Check</h2>
                         <p className="onboarding-subtitle">
-                            Adlens's algorithms are calibrated for specific merchant verticals. Please read each statement carefully and check any that apply to your business.
-                            <strong> If any statement is true for your business, our system cannot accurately process your data.</strong>
+                            Adlens's attribution model is built specifically for direct-to-consumer product businesses. Please check any statements that apply to your business — these categories require specialist analytics platforms and our model may produce unreliable results for them.
                         </p>
 
                         <div className="declaration-notice">
-                            📖 <strong>By submitting this form, you verify these answers are accurate.</strong> Providing incorrect categorization will result in corrupted attribution metrics in your dashboard.
+                            📋 <strong>This information is used to ensure our system produces accurate results for your account.</strong> Mismatched business categories lead to incorrect attribution data and we want to avoid that for you.
                         </div>
 
                         <div className="declaration-list">

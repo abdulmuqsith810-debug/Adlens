@@ -23,17 +23,15 @@ export const HARAM_MCC_CODES = {
     '7011': 'Hotels, Motels (primary business is alcohol/entertainment)',
 };
 
-// Haram self-declaration items (user must deny all of these, framed as data compatibility checks)
+// Business compatibility checks — framed as data modeling / platform compatibility
 export const HARAM_DECLARATIONS = [
-    'My business sells or promotes alcohol, beer, wine, or spirits',
-    'My business sells pork or pork-derived products',
-    'My business is involved in gambling, betting, or lotteries',
-    'My business sells adult or explicit content',
-    'My business provides interest-bearing financial products (loans, mortgages, credit)',
-    'My business sells tobacco, cigarettes, or vaping products',
-    'My business sells uncertified meat or meat-derived products',
-    'My business is involved in weapons manufacturing or retail sales',
+    'My business sells age-restricted products (alcoholic beverages, tobacco, vaping, or adult content)',
+    'My business operates in the gambling, lottery, or games-of-chance industry',
+    'My business is primarily a financial services, lending, or credit institution',
+    'My business sells food or beverage products that require specialized regulatory certifications or supply chain documentation',
+    'My business is in the defense, firearms, or regulated equipment industry',
 ];
+
 
 // Ecommerce product categories that are supported
 export const HALAL_ECOMMERCE_CATEGORIES = [
