@@ -5,7 +5,6 @@ import { WORKER_URL } from '../config';
 export default function ConnectApis() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
-    const [ga4Id, setGa4Id] = useState(localStorage.getItem('iq_ga4_id') || '');
     const [stripeKey, setStripeKey] = useState('');
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -16,7 +15,6 @@ export default function ConnectApis() {
         const newErrors = {};
         if (!email.trim()) newErrors.email = 'Email address is required';
         else if (!email.includes('@') || !email.includes('.')) newErrors.email = 'Enter a valid email address';
-        if (!ga4Id.trim()) newErrors.ga4 = 'GA4 Property ID is required';
         if (!stripeKey.trim()) newErrors.stripe = 'Stripe Restricted Key is required';
         else if (!stripeKey.startsWith('rk_') && !stripeKey.startsWith('sk_test_')) {
             newErrors.stripe = 'Invalid key format. Expected a Restricted Key starting with rk_live_ or rk_test_';
@@ -36,7 +34,6 @@ export default function ConnectApis() {
                 body: JSON.stringify({
                     email: email.trim(),
                     stripeKey: stripeKey.trim(),
-                    ga4Id: ga4Id.trim(),
                     businessType: onboardingData.businessType || '',
                     domain: onboardingData.domain || '',
                 }),
@@ -52,14 +49,14 @@ export default function ConnectApis() {
 
             // Save credentials locally for Worker calls
             localStorage.setItem('iq_token', data.token);
-            localStorage.setItem('iq_ga4_id', ga4Id.trim());
             localStorage.setItem('iq_email', email.trim());
+            localStorage.setItem('iq_stripe_key', stripeKey.trim());
 
             navigate('/onboarding');
         } catch {
             // Worker not deployed yet — fall back to demo mode
-            localStorage.setItem('iq_ga4_id', ga4Id.trim());
             localStorage.setItem('iq_email', email.trim());
+            localStorage.setItem('iq_stripe_key', stripeKey.trim());
             navigate('/onboarding');
         } finally {
             setLoading(false);
@@ -99,20 +96,6 @@ export default function ConnectApis() {
                             onChange={e => { setEmail(e.target.value); setErrors({ ...errors, email: null }); setServerError(''); }}
                         />
                         {errors.email && <p className="onboarding-error">{errors.email}</p>}
-                    </div>
-
-                    {/* GA4 Property ID */}
-                    <div className="onboarding-field" style={{ marginTop: '20px' }}>
-                        <label className="field-label">Google Analytics 4 Property ID <span className="required-star">*</span></label>
-                        <p className="field-hint">Found in GA4 Admin → Property Settings (e.g., 213025502)</p>
-                        <input
-                            type="text"
-                            placeholder="e.g. 213025502"
-                            className={`field-input ${errors.ga4 ? 'input-error' : ''}`}
-                            value={ga4Id}
-                            onChange={e => { setGa4Id(e.target.value); setErrors({ ...errors, ga4: null }); setServerError(''); }}
-                        />
-                        {errors.ga4 && <p className="onboarding-error">{errors.ga4}</p>}
                     </div>
 
                     {/* Stripe Key */}

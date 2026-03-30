@@ -27,7 +27,7 @@ export default function LandingPage() {
                         Which Ad Worked?
                     </h1>
                     <p className="hero-subtitle">
-                        Google Ads and Facebook Ads both report conversions — but they each count the same sale as their own win. Adlens connects your <strong>Stripe revenue to your actual GA4 click data</strong> so you can see which platform genuinely earned its spend.
+                        Google Ads and Facebook Ads both report conversions — but they each count the same sale as their own win. Adlens connects your <strong>Stripe revenue to your independent Adlens Pixel data</strong> so you can see which platform genuinely earned its spend.
                     </p>
                     <div className="hero-truth-box">
                         <span className="truth-icon">📖</span>
@@ -38,7 +38,7 @@ export default function LandingPage() {
                         <Link to="/guide" className="btn-secondary">How It Works</Link>
                     </div>
                     <p className="hero-trust-note">
-                        🔒 Read-Only API access only. We never request write permissions, never store customer names or emails, and never sell your data.
+                        🔒 Read-Only API access. We never request write permissions, never store your customers' names or emails, and never sell your data.
                     </p>
                 </div>
 
@@ -97,7 +97,7 @@ export default function LandingPage() {
                     <div className="step-card">
                         <div className="step-num">01</div>
                         <h3>You Connect Your APIs</h3>
-                        <p>Provide your Read-Only Stripe API key and your GA4 Property ID. We request the minimum permissions needed — no write access, no billing access.</p>
+                        <p>Provide your Read-Only Stripe API key and install our lightweight tracking pixel. We request the bare minimum permissions needed — no write access, no billing access.</p>
                     </div>
                     <div className="step-card">
                         <div className="step-num">02</div>
@@ -144,7 +144,7 @@ export default function LandingPage() {
                     <div className="feature-card">
                         <div className="feature-icon">🔒</div>
                         <h3>Privacy by Design</h3>
-                        <p>We use anonymous GA4 Client IDs and Stripe transaction IDs only. No customer names, emails, or personal data are accessed or stored.</p>
+                        <p>We process the macro data only. We never extract, access, or store your individual customers' names, emails, or personal data.</p>
                     </div>
                 </div>
             </section>
@@ -164,15 +164,15 @@ export default function LandingPage() {
                     <div className="limitation-item">
                         <span className="limitation-icon">⚠️</span>
                         <div>
-                            <strong>Attribution is based on last-click (GA4)</strong>
-                            <p>Revenue attribution follows GA4's session model. Multi-touch journeys are simplified to the last known click source. This is a known limitation of GA4.</p>
+                            <strong>Attribution uses Macro Mix Modeling</strong>
+                            <p>Revenue attribution relies on statistical velocity modeling rather than invasive cookie trackers. We overlap your macro ad click volume against your macro Stripe payments.</p>
                         </div>
                     </div>
                     <div className="limitation-item">
                         <span className="limitation-icon">⚠️</span>
                         <div>
-                            <strong>Results depend on your data quality</strong>
-                            <p>If your GA4 or Stripe setup is missing UTM parameters or has gaps, the attribution data will reflect those gaps. We cannot improve source data quality.</p>
+                            <strong>Results depend on UTM Tracking</strong>
+                            <p>If your Facebook Ads or Google Ads campaigns are missing UTM parameters, the Adlens Pixel cannot map the traffic. Proper UTM tags are required.</p>
                         </div>
                     </div>
                 </div>
@@ -188,7 +188,7 @@ export default function LandingPage() {
                         <div className="pricing-price">$0<span>/14 days</span></div>
                         <ul className="pricing-features">
                             <li>✅ Live Stripe data connection</li>
-                            <li>✅ Live GA4 data connection</li>
+                            <li>✅ Live Cloudflare D1 Pixel connection</li>
                             <li>✅ All 6 regions</li>
                             <li>✅ Hourly & Daily views</li>
                             <li>✅ Spend efficiency calculator</li>
@@ -201,7 +201,7 @@ export default function LandingPage() {
                         <div className="pricing-price">$29<span>/month</span></div>
                         <ul className="pricing-features">
                             <li>✅ Live Stripe API connection</li>
-                            <li>✅ Live GA4 API connection</li>
+                            <li>✅ Live Cloudflare D1 Pixel connection</li>
                             <li>✅ Unlimited data processing</li>
                             <li>✅ Hourly & Daily views</li>
                             <li>✅ Ad spend efficiency tracker</li>

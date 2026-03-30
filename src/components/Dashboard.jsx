@@ -1,9 +1,23 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import PlatformGraph from './PlatformGraph';
 import SpendEfficiency from './SpendEfficiency';
-import { mockDataDay, mockDataWeek, regions, getSummary } from '../data/mockData';
+import { WORKER_URL } from '../config';
 
-const REGIONS = regions;
+const REGIONS = ['Overall', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'France'];
+
+function getSummary(data) {
+    if (!data || data.length === 0) {
+        return { totalGoogleVisits: 0, totalFacebookVisits: 0, totalGoogleRevenue: 0, totalFacebookRevenue: 0, totalRevenue: 0, peakRevenueLabel: 'N/A' };
+    }
+    return {
+        totalGoogleVisits: data.reduce((s, d) => s + (d.googleVisits || 0), 0),
+        totalFacebookVisits: data.reduce((s, d) => s + (d.facebookVisits || 0), 0),
+        totalGoogleRevenue: data.reduce((s, d) => s + (d.googleRevenue || 0), 0),
+        totalFacebookRevenue: data.reduce((s, d) => s + (d.facebookRevenue || 0), 0),
+        totalRevenue: data.reduce((s, d) => s + (d.revenue || 0), 0),
+        peakRevenueLabel: data.reduce((best, d) => (d.revenue > best.revenue ? d : best), data[0]).timeLabel,
+    };
+}
 
 function SummaryCard({ label, value, sub, accent }) {
     return (
@@ -33,15 +47,50 @@ function RegionSelector({ active, onChange }) {
 
 export default function Dashboard() {
     const [region, setRegion] = useState('Overall');
-    const [date, setDate] = useState('2026-03-15');
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [timeRange, setTimeRange] = useState('day');
     const [theme, setTheme] = useState('dark');
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
+    const [apiData, setApiData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const fetchAnalytics = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const token = localStorage.getItem('iq_token');
+                const stripeKey = localStorage.getItem('iq_stripe_key');
+                if (!token || !stripeKey) throw new Error('Missing credentials. Please hit reconnect your APIs from the start page.');
+
+                const res = await fetch(`${WORKER_URL}/api/analytics`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token, stripeKey, range: timeRange })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to fetch analytics from Adlens Tracker.');
+                }
+
+                setApiData(await res.json());
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, [timeRange]);
+
     const data = useMemo(() => {
-        const sourceMenu = timeRange === 'day' ? mockDataDay : mockDataWeek;
-        return sourceMenu[region] || sourceMenu['Overall'];
-    }, [region, timeRange]);
+        if (!apiData) return [];
+        return apiData[region] || apiData['Overall'] || [];
+    }, [apiData, region]);
     const summary = useMemo(() => getSummary(data), [data]);
 
     return (
@@ -98,8 +147,25 @@ export default function Dashboard() {
                 </aside>
 
                 <main className="dash-main">
-                    {/* Summary Cards */}
-                    <div className="summary-row">
+                    {loading && (
+                        <div className="dashboard-loading" style={{ padding: '60px', textAlign: 'center' }}>
+                            <div className="spinner" style={{ margin: '0 auto 20px auto' }}></div>
+                            <h2 style={{ fontWeight: 400, color: 'var(--text-light)' }}>Crunching Media Mix Math...</h2>
+                            <p style={{ color: 'var(--text-muted)' }}>Fetching live views from D1 and revenue from Stripe</p>
+                        </div>
+                    )}
+                    
+                    {error && (
+                        <div className="dashboard-error" style={{ background: 'rgba(255,0,0,0.1)', border: '1px solid red', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
+                            <h3 style={{ color: '#ff4d4d', marginTop: 0 }}>Analytics Engine Error</h3>
+                            <p>{error}</p>
+                        </div>
+                    )}
+
+                    {!loading && !error && (
+                        <>
+                            {/* Summary Cards */}
+                            <div className="summary-row">
                                 <SummaryCard
                                     label="Total Google Visits"
                                     value={summary.totalGoogleVisits.toLocaleString()}
@@ -167,10 +233,18 @@ export default function Dashboard() {
                                 summary={summary}
                             />
 
+                            {/* Spend Efficiency */}
+                            <SpendEfficiency
+                                region={region}
+                                summary={summary}
+                            />
+                        </>
+                    )}
+
                     {/* Footer */}
                     <footer className="dash-footer">
-                        <span>Adlens — Data from Google Analytics 4 + Stripe · Powered by Cloudflare Workers</span>
-                        <span className="footer-note">⚠ Revenue shown is total store revenue, not platform-specific</span>
+                        <span>Adlens — Powered by Cloudflare D1 Tracker & Workers</span>
+                        <span className="footer-note">⚠ Revenue tracks live Stripe success charges directly.</span>
                     </footer>
                 </main>
             </div>

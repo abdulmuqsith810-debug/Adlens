@@ -68,7 +68,7 @@ export const BUSINESS_TYPES = [
         value: 'service',
         label: '🤝 Service Business — Agency, freelance, consulting',
         supported: false,
-        note: 'Adlens is built for product-based businesses. Service businesses have a different customer journey — revenue attribution through GA4 and Stripe may not reflect your actual acquisition costs accurately.',
+        note: 'Adlens is built for product-based businesses. Service businesses have a different customer journey — revenue attribution through the Adlens Tracker and Stripe may not reflect your actual acquisition costs accurately.',
     },
     {
         value: 'subscription',

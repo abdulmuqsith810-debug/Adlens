@@ -234,7 +234,7 @@ export default function Guide() {
                     Real dashboard scenarios, illustrated. Each one shows exactly what the data looks like, what it means, and what action to consider taking.
                 </p>
                 <p className="guide-disclaimer">
-                    ⚠️ These illustrations use example numbers to explain patterns. Your actual dashboard will show your own real data from Stripe and GA4.
+                    ⚠️ These illustrations use example numbers to explain patterns. Your actual dashboard will run the Contribution Math using your own real data from Stripe and the Adlens Custom Pixel.
                 </p>
             </section>
 
