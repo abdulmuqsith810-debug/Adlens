@@ -1,22 +1,35 @@
 import { useState, useMemo, useEffect } from 'react';
 import PlatformGraph from './PlatformGraph';
 import SpendEfficiency from './SpendEfficiency';
+import UtmGenerator from './UtmGenerator';
+import PixelDeployer from './PixelDeployer';
 import { WORKER_URL } from '../config';
 
 const REGIONS = ['Overall', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'France'];
 
-function getSummary(data) {
+function getSummary(data, platforms = ['meta', 'google']) {
     if (!data || data.length === 0) {
-        return { totalGoogleVisits: 0, totalFacebookVisits: 0, totalGoogleRevenue: 0, totalFacebookRevenue: 0, totalRevenue: 0, peakRevenueLabel: 'N/A' };
+        return { totalRevenue: 0, platformStats: {}, peakRevenueLabel: 'N/A' };
     }
-    return {
-        totalGoogleVisits: data.reduce((s, d) => s + (d.googleVisits || 0), 0),
-        totalFacebookVisits: data.reduce((s, d) => s + (d.facebookVisits || 0), 0),
-        totalGoogleRevenue: data.reduce((s, d) => s + (d.googleRevenue || 0), 0),
-        totalFacebookRevenue: data.reduce((s, d) => s + (d.facebookRevenue || 0), 0),
+    
+    const summary = {
         totalRevenue: data.reduce((s, d) => s + (d.revenue || 0), 0),
-        peakRevenueLabel: data.reduce((best, d) => (d.revenue > best.revenue ? d : best), data[0]).timeLabel,
+        peakRevenueLabel: data.reduce((best, d) => ((d.revenue || 0) > (best.revenue || 0) ? d : best), data[0]).timeLabel,
+        platformStats: {}
     };
+
+    let allVisits = 0;
+    
+    platforms.forEach(p => {
+        const visits = data.reduce((s, d) => s + (d[`${p}Visits`] || 0), 0);
+        const revenue = data.reduce((s, d) => s + (d[`${p}Revenue`] || 0), 0);
+        summary.platformStats[p] = { visits, revenue };
+        allVisits += visits;
+    });
+
+    summary.totalVisits = Math.max(allVisits, 1);
+    
+    return summary;
 }
 
 function SummaryCard({ label, value, sub, accent }) {
@@ -55,6 +68,8 @@ export default function Dashboard() {
     const [apiData, setApiData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [showUtm, setShowUtm] = useState(false);
+    const [showPixelDeployer, setShowPixelDeployer] = useState(false);
 
     useEffect(() => {
         const fetchAnalytics = async () => {
@@ -88,10 +103,10 @@ export default function Dashboard() {
     }, [timeRange]);
 
     const data = useMemo(() => {
-        if (!apiData) return [];
+        if (!apiData?.Overall) return [];
         return apiData[region] || apiData['Overall'] || [];
     }, [apiData, region]);
-    const summary = useMemo(() => getSummary(data), [data]);
+    const summary = useMemo(() => getSummary(data, apiData?.platforms || ['meta', 'google']), [data, apiData]);
 
     return (
         <div className={`dashboard ${theme} ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
@@ -125,7 +140,21 @@ export default function Dashboard() {
                         value={date}
                         onChange={e => setDate(e.target.value)}
                     />
-                    <span className="live-badge">● LIVE</span>
+                    <span className="live-badge" style={{ marginRight: '10px' }}>● LIVE</span>
+                    <button 
+                        className="btn-secondary"
+                        onClick={() => setShowPixelDeployer(true)}
+                        style={{ padding: '6px 12px', fontSize: '13px', borderRadius: '6px', marginRight: '10px', background: 'transparent', border: '1px solid var(--border)', color: 'var(--text)' }}
+                    >
+                        &lt;/&gt; Deploy Pixel
+                    </button>
+                    <button 
+                        className="btn-primary"
+                        onClick={() => setShowUtm(true)}
+                        style={{ padding: '6px 12px', fontSize: '13px', borderRadius: '6px' }}
+                    >
+                        ⚙ Setup Tracking
+                    </button>
                     <button 
                         className="disconnect-btn"
                         onClick={() => {
@@ -180,55 +209,50 @@ export default function Dashboard() {
                             {/* Summary Cards */}
                             <div className="summary-row">
                                 <SummaryCard
-                                    label="Total Google Visits"
-                                    value={summary.totalGoogleVisits.toLocaleString()}
-                                    sub="from Google Ads"
+                                    label="Total Global Visits"
+                                    value={summary.totalVisits.toLocaleString()}
+                                    sub="across all platforms"
                                     accent="#4285F4"
                                 />
                                 <SummaryCard
-                                    label="Total Facebook Visits"
-                                    value={summary.totalFacebookVisits.toLocaleString()}
-                                    sub="from Facebook Ads"
-                                    accent="#23C552"
-                                />
-                                <SummaryCard
-                                    label="Total Revenue"
+                                    label="Tracked Revenue"
                                     value={`$${summary.totalRevenue.toLocaleString()}`}
-                                    sub={`Peak at ${summary.peakRevenueLabel || 'N/A'}`}
+                                    sub="from connected Stripe"
                                     accent="#FFD700"
                                 />
                                 <SummaryCard
+                                    label="Peak Conversion Window"
+                                    value={summary.peakRevenueLabel || 'N/A'}
+                                    sub="highest hourly volume"
+                                    accent="#23C552"
+                                />
+                                <SummaryCard
                                     label="Revenue Per Visit"
-                                    value={`$${((summary.totalRevenue / Math.max(summary.totalGoogleVisits + summary.totalFacebookVisits, 1))).toFixed(2)}`}
-                                    sub="Combined avg"
+                                    value={`$${(summary.totalRevenue / summary.totalVisits).toFixed(2)}`}
+                                    sub="Efficiency metric"
                                     accent="#a78bfa"
                                 />
                             </div>
 
                             {/* Platform Graphs Side by Side */}
-                            <div className="graphs-row">
-                                <PlatformGraph
-                                    platform="google"
-                                    data={data}
-                                    title="Google Ads"
-                                />
-                                <PlatformGraph
-                                    platform="facebook"
-                                    data={data}
-                                    title="Facebook Ads"
-                                />
+                            <div className="graphs-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
+                                {(apiData?.platforms || ['meta', 'google']).map(p => (
+                                    <PlatformGraph
+                                        key={p}
+                                        platform={p}
+                                        data={data}
+                                        title={`${p.charAt(0).toUpperCase() + p.slice(1)} Ads`}
+                                    />
+                                ))}
                             </div>
 
                             {/* Graph Legend */}
-            <div className="graph-legend-row">
+            <div className="graph-legend-row" style={{ marginTop: '20px' }}>
                 <div className="legend-item">
-                    <span className="legend-bar" style={{ backgroundColor: '#4285F4' }} /> Google Visits (bars)
+                    <span className="legend-bar" style={{ backgroundColor: '#1877F2' }} /> Visits (bars)
                 </div>
                 <div className="legend-item">
-                    <span className="legend-bar" style={{ backgroundColor: '#23C552' }} /> Facebook Visits (bars)
-                </div>
-                <div className="legend-item">
-                    <span className="legend-line" style={{ backgroundColor: '#FFD700' }} /> Revenue Line (both graphs)
+                    <span className="legend-line" style={{ backgroundColor: '#FFD700' }} /> Mathematical Revenue Share (line)
                 </div>
                 <div className="legend-item">
                     <span className="legend-gap-demo">
@@ -244,14 +268,23 @@ export default function Dashboard() {
                             <SpendEfficiency
                                 region={region}
                                 summary={summary}
-                            />
-
-                            {/* Spend Efficiency */}
-                            <SpendEfficiency
-                                region={region}
-                                summary={summary}
+                                platforms={apiData?.platforms || ['meta', 'google']}
                             />
                         </>
+                    )}
+
+                    {showUtm && (
+                        <UtmGenerator 
+                            platforms={apiData?.platforms || ['meta', 'google']}
+                            onClose={() => setShowUtm(false)}
+                        />
+                    )}
+
+                    {showPixelDeployer && (
+                        <PixelDeployer 
+                            token={localStorage.getItem('iq_token')}
+                            onClose={() => setShowPixelDeployer(false)}
+                        />
                     )}
 
                     {/* Footer */}

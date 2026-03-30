@@ -1,130 +1,114 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-export default function SpendEfficiency({ region, summary }) {
-    const [googleSpend, setGoogleSpend] = useState('');
-    const [facebookSpend, setFacebookSpend] = useState('');
+const COLORS = {
+    meta: '#1877F2',
+    google: '#4285F4',
+    tiktok: '#ff0050',
+    snapchat: '#fffc00',
+    pinterest: '#E60023',
+    linkedin: '#0A66C2',
+    default: '#a78bfa'
+};
 
-    const gSpend = parseFloat(googleSpend) || 0;
-    const fSpend = parseFloat(facebookSpend) || 0;
+export default function SpendEfficiency({ region, summary, platforms = [] }) {
+    const [spends, setSpends] = useState({});
 
-    const gVisitsPerDollar = gSpend > 0 ? (summary.totalGoogleVisits / gSpend).toFixed(2) : null;
-    const fVisitsPerDollar = fSpend > 0 ? (summary.totalFacebookVisits / fSpend).toFixed(2) : null;
+    const handleSpendChange = (platform, value) => {
+        setSpends(prev => ({ ...prev, [platform]: value }));
+    };
 
-    const gRevenuePerDollar = gSpend > 0 && summary.totalGoogleRevenue > 0
-        ? (summary.totalGoogleRevenue / gSpend).toFixed(2)
-        : null;
-    const fRevenuePerDollar = fSpend > 0 && summary.totalFacebookRevenue > 0
-        ? (summary.totalFacebookRevenue / fSpend).toFixed(2)
-        : null;
+    const metrics = useMemo(() => {
+        if (!platforms) return [];
+        
+        return platforms.map(p => {
+            const rawSpend = parseFloat(spends[p]) || 0;
+            const stats = summary?.platformStats?.[p] || { visits: 0, revenue: 0 };
+            
+            const vpd = rawSpend > 0 ? (stats.visits / rawSpend).toFixed(2) : null;
+            const rpd = rawSpend > 0 && stats.revenue > 0 ? (stats.revenue / rawSpend).toFixed(2) : null;
+            
+            return {
+                platform: p,
+                title: `${p.charAt(0).toUpperCase() + p.slice(1)} Ads`,
+                color: COLORS[p] || COLORS.default,
+                spend: rawSpend,
+                visits: stats.visits,
+                revenue: stats.revenue,
+                vpd: vpd ? parseFloat(vpd) : 0,
+                rpd: rpd ? parseFloat(rpd) : 0,
+                vpdText: vpd,
+                rpdText: rpd
+            };
+        }).filter(m => m.spend > 0);
+    }, [platforms, spends, summary]);
 
-    const gWins = gVisitsPerDollar && fVisitsPerDollar && parseFloat(gVisitsPerDollar) > parseFloat(fVisitsPerDollar);
-    const fWins = gVisitsPerDollar && fVisitsPerDollar && parseFloat(fVisitsPerDollar) > parseFloat(gVisitsPerDollar);
-    const hasResults = gVisitsPerDollar || fVisitsPerDollar;
+    // Find the winner by visits per dollar
+    const sorted = [...metrics].sort((a, b) => b.vpd - a.vpd);
+    const winner = sorted.length > 1 ? sorted[0] : null;
+    const runnerUp = sorted.length > 1 ? sorted[1] : null;
+    const hasResults = sorted.length > 0;
 
     return (
         <div className="spend-efficiency">
             <div className="spend-header">
-                <h3 className="spend-title">💰 Spend Efficiency</h3>
+                <h3 className="spend-title">💰 ROAS Calculator</h3>
                 <span className="spend-region-tag">{region}</span>
             </div>
 
             <div className="spend-inputs">
-                <div className="spend-input-group">
-                    <label className="spend-label google-label">
-                        <span className="platform-dot" style={{ backgroundColor: '#4285F4' }} />
-                        Google Ads Spend Today ($)
-                    </label>
-                    <input
-                        type="number"
-                        className="spend-input"
-                        placeholder="e.g. 500"
-                        value={googleSpend}
-                        onChange={e => setGoogleSpend(e.target.value)}
-                        min="0"
-                    />
-                </div>
-                <div className="spend-input-group">
-                    <label className="spend-label facebook-label">
-                        <span className="platform-dot" style={{ backgroundColor: '#23C552' }} />
-                        Facebook Ads Spend Today ($)
-                    </label>
-                    <input
-                        type="number"
-                        className="spend-input"
-                        placeholder="e.g. 300"
-                        value={facebookSpend}
-                        onChange={e => setFacebookSpend(e.target.value)}
-                        min="0"
-                    />
-                </div>
+                {platforms.map(p => (
+                    <div className="spend-input-group" key={p}>
+                        <label className="spend-label">
+                            <span className="platform-dot" style={{ backgroundColor: COLORS[p] || COLORS.default }} />
+                            {p.charAt(0).toUpperCase() + p.slice(1)} Spend Today ($)
+                        </label>
+                        <input
+                            type="number"
+                            className="spend-input"
+                            placeholder="e.g. 500"
+                            value={spends[p] || ''}
+                            onChange={e => handleSpendChange(p, e.target.value)}
+                            min="0"
+                        />
+                    </div>
+                ))}
             </div>
 
             {hasResults && (
-                <div className="efficiency-results">
-                    <div className={`efficiency-card ${gWins ? 'winner' : fWins ? 'loser' : ''}`}>
-                        <div className="eff-platform">
-                            <span className="platform-dot" style={{ backgroundColor: '#4285F4' }} />
-                            Google Ads
-                            {gWins && <span className="winner-badge">✅ More Efficient</span>}
-                            {fWins && <span className="loser-badge">❌ Less Efficient</span>}
-                        </div>
-                        <div className="eff-metrics">
-                            <div className="eff-metric">
-                                <span className="eff-metric-label">Visits / $</span>
-                                <span className="eff-metric-value" style={{ color: '#4285F4' }}>
-                                    {gVisitsPerDollar ?? '—'}
-                                </span>
+                <div className="efficiency-results" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                    {sorted.map((m, i) => (
+                        <div key={m.platform} className={`efficiency-card ${i === 0 && sorted.length > 1 ? 'winner' : (i > 0 ? 'loser' : '')}`}>
+                            <div className="eff-platform">
+                                <span className="platform-dot" style={{ backgroundColor: m.color }} />
+                                {m.title}
+                                {i === 0 && sorted.length > 1 && <span className="winner-badge">✅ Most Efficient</span>}
                             </div>
-                            <div className="eff-metric">
-                                <span className="eff-metric-label">Revenue / $</span>
-                                <span className="eff-metric-value" style={{ color: '#FFD700' }}>
-                                    {gRevenuePerDollar ? `$${gRevenuePerDollar}` : '—'}
-                                </span>
-                            </div>
-                            <div className="eff-metric">
-                                <span className="eff-metric-label">Spend</span>
-                                <span className="eff-metric-value">${gSpend.toLocaleString()}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={`efficiency-card ${fWins ? 'winner' : gWins ? 'loser' : ''}`}>
-                        <div className="eff-platform">
-                            <span className="platform-dot" style={{ backgroundColor: '#23C552' }} />
-                            Facebook Ads
-                            {fWins && <span className="winner-badge">✅ More Efficient</span>}
-                            {gWins && <span className="loser-badge">❌ Less Efficient</span>}
-                        </div>
-                        <div className="eff-metrics">
-                            <div className="eff-metric">
-                                <span className="eff-metric-label">Visits / $</span>
-                                <span className="eff-metric-value" style={{ color: '#23C552' }}>
-                                    {fVisitsPerDollar ?? '—'}
-                                </span>
-                            </div>
-                            <div className="eff-metric">
-                                <span className="eff-metric-label">Revenue / $</span>
-                                <span className="eff-metric-value" style={{ color: '#FFD700' }}>
-                                    {fRevenuePerDollar ? `$${fRevenuePerDollar}` : '—'}
-                                </span>
-                            </div>
-                            <div className="eff-metric">
-                                <span className="eff-metric-label">Spend</span>
-                                <span className="eff-metric-value">${fSpend.toLocaleString()}</span>
+                            <div className="eff-metrics">
+                                <div className="eff-metric">
+                                    <span className="eff-metric-label">Visits / $</span>
+                                    <span className="eff-metric-value" style={{ color: m.color }}>
+                                        {m.vpdText ?? '—'}
+                                    </span>
+                                </div>
+                                <div className="eff-metric">
+                                    <span className="eff-metric-label">Revenue / $</span>
+                                    <span className="eff-metric-value" style={{ color: '#FFD700' }}>
+                                        {m.rpdText ? `$${m.rpdText}` : '—'}
+                                    </span>
+                                </div>
+                                <div className="eff-metric">
+                                    <span className="eff-metric-label">Spend</span>
+                                    <span className="eff-metric-value">${m.spend.toLocaleString()}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
             )}
 
-            {hasResults && gWins && (
+            {winner && runnerUp && winner.vpd > 0 && runnerUp.vpd > 0 && (
                 <div className="spend-insight">
-                    💡 <strong>Insight:</strong> Google Ads is returning <strong>{(parseFloat(gVisitsPerDollar) / parseFloat(fVisitsPerDollar)).toFixed(1)}x</strong> more visits per dollar than Facebook. Consider shifting budget to Google for {region}.
-                </div>
-            )}
-            {hasResults && fWins && (
-                <div className="spend-insight">
-                    💡 <strong>Insight:</strong> Facebook Ads is returning <strong>{(parseFloat(fVisitsPerDollar) / parseFloat(gVisitsPerDollar)).toFixed(1)}x</strong> more visits per dollar than Google. Consider shifting budget to Facebook for {region}.
+                    💡 <strong>Insight:</strong> {winner.title} is returning <strong>{(winner.vpd / runnerUp.vpd).toFixed(1)}x</strong> more visits per dollar than {runnerUp.title}. Consider shifting budget to {winner.title} for {region}.
                 </div>
             )}
 

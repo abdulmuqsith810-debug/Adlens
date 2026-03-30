@@ -12,14 +12,15 @@ import {
     ReferenceLine,
 } from 'recharts';
 
-const PLATFORM_COLORS = {
-    google: '#4285F4',
-    facebook: '#1877F2',
-};
-
 const PLATFORM_VISIT_COLORS = {
     google: '#4285F4',
     facebook: '#1877F2',
+    meta: '#1877F2',
+    tiktok: '#ff0050',
+    snapchat: '#fffc00',
+    pinterest: '#E60023',
+    linkedin: '#0A66C2',
+    default: '#a78bfa'
 };
 
 const REVENUE_COLOR = '#FFD700';
@@ -36,7 +37,7 @@ const CustomTooltip = ({ active, payload, label, platform }) => {
             <div className="custom-tooltip">
                 <p className="tooltip-hour">{label}</p>
                 {visits && (
-                    <p className="tooltip-visits" style={{ color: PLATFORM_VISIT_COLORS[platform] }}>
+                    <p className="tooltip-visits" style={{ color: PLATFORM_VISIT_COLORS[platform] || PLATFORM_VISIT_COLORS.default }}>
                         Visits: <strong>{visits.value.toLocaleString()}</strong>
                     </p>
                 )}
@@ -55,11 +56,11 @@ const CustomTooltip = ({ active, payload, label, platform }) => {
 };
 
 const PlatformGraph = ({ platform, data, title }) => {
-    const visitColor = PLATFORM_VISIT_COLORS[platform];
+    const visitColor = PLATFORM_VISIT_COLORS[platform] || PLATFORM_VISIT_COLORS.default;
 
     const chartData = data.map(d => ({
         timeLabel: d.timeLabel,
-        visits: platform === 'google' ? d.googleVisits : d.facebookVisits,
+        visits: d[`${platform}Visits`] || 0,
         revenue: d.revenue,
     }));
 

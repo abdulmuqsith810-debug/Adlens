@@ -6,6 +6,7 @@ export default function ConnectApis() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [stripeKey, setStripeKey] = useState('');
+    const [platforms, setPlatforms] = useState({ meta: true, google: true, tiktok: false, snapchat: false, pinterest: false, linkedin: false });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [serverError, setServerError] = useState('');
@@ -18,6 +19,11 @@ export default function ConnectApis() {
         if (!stripeKey.trim()) newErrors.stripe = 'Stripe Restricted Key is required';
         else if (!stripeKey.startsWith('rk_') && !stripeKey.startsWith('sk_test_')) {
             newErrors.stripe = 'Invalid key format. Expected a Restricted Key starting with rk_live_ or rk_test_';
+        }
+        
+        const selectedPlatforms = Object.keys(platforms).filter(k => platforms[k]);
+        if (selectedPlatforms.length === 0) {
+            newErrors.platforms = 'Please select at least one ad platform to continue.';
         }
 
         if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
@@ -36,6 +42,7 @@ export default function ConnectApis() {
                     stripeKey: stripeKey.trim(),
                     businessType: onboardingData.businessType || '',
                     domain: onboardingData.domain || '',
+                    platforms: selectedPlatforms,
                 }),
             });
 
@@ -51,12 +58,14 @@ export default function ConnectApis() {
             localStorage.setItem('iq_token', data.token);
             localStorage.setItem('iq_email', email.trim());
             localStorage.setItem('iq_stripe_key', stripeKey.trim());
+            localStorage.setItem('iq_platforms', JSON.stringify(data.platforms || selectedPlatforms));
 
             navigate('/onboarding');
         } catch {
             // Worker not deployed yet — fall back to demo mode
             localStorage.setItem('iq_email', email.trim());
             localStorage.setItem('iq_stripe_key', stripeKey.trim());
+            localStorage.setItem('iq_platforms', JSON.stringify(selectedPlatforms));
             navigate('/onboarding');
         } finally {
             setLoading(false);
@@ -110,6 +119,25 @@ export default function ConnectApis() {
                             onChange={e => { setStripeKey(e.target.value); setErrors({ ...errors, stripe: null }); setServerError(''); }}
                         />
                         {errors.stripe && <p className="onboarding-error">{errors.stripe}</p>}
+                    </div>
+
+                    {/* Platforms Select */}
+                    <div className="onboarding-field" style={{ marginTop: '24px' }}>
+                        <label className="field-label">Which Ad Platforms do you use? <span className="required-star">*</span></label>
+                        <p className="field-hint">Select all that apply. This configures your algorithm.</p>
+                        <div className="platform-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '10px', marginTop: '10px' }}>
+                            {Object.entries({ meta: 'Meta Ads (FB/IG)', google: 'Google Ads', tiktok: 'TikTok Ads', snapchat: 'Snapchat Ads', pinterest: 'Pinterest Ads', linkedin: 'LinkedIn Ads' }).map(([key, label]) => (
+                                <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--surface-light)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border)' }}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={platforms[key]} 
+                                        onChange={(e) => { setPlatforms({ ...platforms, [key]: e.target.checked }); setErrors({ ...errors, platforms: null }); }} 
+                                        style={{ accentColor: 'var(--primary)', width: '16px', height: '16px' }} />
+                                    <span style={{ fontSize: '14px', color: 'var(--text)', whiteSpace: 'nowrap' }}>{label}</span>
+                                </label>
+                            ))}
+                        </div>
+                        {errors.platforms && <p className="onboarding-error">{errors.platforms}</p>}
                     </div>
 
                     {serverError && (
