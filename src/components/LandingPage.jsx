@@ -13,7 +13,7 @@ export default function LandingPage() {
                 <nav className="landing-nav">
                     <Link to="/guide" className="nav-link">How It Works</Link>
                     <a href="#pricing" className="nav-link">Pricing</a>
-                    <Link to="/dashboard" className="nav-cta-btn">Open Dashboard →</Link>
+                    <a href="#pricing" className="nav-cta-btn">View Pricing →</a>
                 </nav>
             </header>
 
@@ -34,7 +34,7 @@ export default function LandingPage() {
                         <p>We only show you numbers derived from your own data. No estimates. No inflated benchmarks. No promises of specific results.</p>
                     </div>
                     <div className="hero-actions">
-                        <Link to="/dashboard" className="btn-primary">Open Dashboard (Free)</Link>
+                        <a href="#pricing" className="btn-primary">View Pricing (14-Day Free Trial)</a>
                         <Link to="/guide" className="btn-secondary">How It Works</Link>
                     </div>
                     <p className="hero-trust-note">
