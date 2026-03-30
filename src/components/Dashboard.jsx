@@ -126,6 +126,19 @@ export default function Dashboard() {
                         onChange={e => setDate(e.target.value)}
                     />
                     <span className="live-badge">● LIVE</span>
+                    <button 
+                        className="disconnect-btn"
+                        onClick={() => {
+                            localStorage.removeItem('iq_token');
+                            localStorage.removeItem('iq_stripe_key');
+                            localStorage.removeItem('iq_email');
+                            window.location.href = '/connect';
+                        }}
+                        title="Disconnect APIs & Logout"
+                        style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem', marginLeft: '10px' }}
+                    >
+                        Disconnect
+                    </button>
                 </div>
             </header>
 
