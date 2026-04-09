@@ -77,8 +77,8 @@ export default function Dashboard() {
             setError('');
             try {
                 const token = localStorage.getItem('iq_token');
-                const stripeKey = localStorage.getItem('iq_stripe_key');
-                if (!token || !stripeKey) {
+                if (!token) {
+                    // No session — show beautiful demo data
                     setApiData({
                         platforms: ['meta', 'google'],
                         Overall: [
@@ -95,7 +95,7 @@ export default function Dashboard() {
                 const res = await fetch(`${WORKER_URL}/api/analytics`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token, stripeKey, range: timeRange })
+                    body: JSON.stringify({ token, range: timeRange })
                 });
 
                 if (!res.ok) {

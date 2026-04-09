@@ -17,9 +17,10 @@ export default function TrialExpired() {
             </div>
 
             <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-                {/* xFlow checkout link — replace href with your actual xFlow payment URL */}
+                {/* TODO: Replace href below with your real xFlow payment URL */}
                 <a
-                    href="#xflow-checkout"
+                    href="#"
+                    onClick={e => { e.preventDefault(); alert('Payment link not configured yet. Please contact Adlens support.'); }}
                     className="btn-primary"
                     style={{ padding: '14px 40px', fontSize: '15px', textDecoration: 'none' }}
                 >
