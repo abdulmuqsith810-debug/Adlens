@@ -42,7 +42,7 @@ export default function PixelDeployer({ token, onClose }) {
                 </div>
 
                 <div className="installation-steps">
-                    <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--text)' }}>How to install on Shopify:</h3>
+                    <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--text)' }}>How to install (Shopify, WooCommerce, Custom Sites, etc):</h3>
                     <ol style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.6, margin: 0, paddingLeft: '20px' }}>
                         <li style={{ marginBottom: '10px' }}>Log into your Shopify Admin dashboard.</li>
                         <li style={{ marginBottom: '10px' }}>Go to <strong>Online Store</strong> → <strong>Themes</strong>.</li>

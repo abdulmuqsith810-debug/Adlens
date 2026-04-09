@@ -221,7 +221,7 @@ export default function Guide() {
                 </div>
                 <nav className="landing-nav">
                     <Link to="/" className="nav-link">Home</Link>
-                    <Link to="/dashboard" className="nav-cta-btn">Open Dashboard →</Link>
+                    <Link to="/connect" className="nav-cta-btn">Sign In / Sign Up →</Link>
                 </nav>
             </header>
 
@@ -270,9 +270,9 @@ export default function Guide() {
             </section>
 
             <section className="guide-cta">
-                <h2>Open Your Dashboard</h2>
-                <p>The demo dashboard is available immediately with sample data. Connect your accounts when you are ready.</p>
-                <Link to="/dashboard" className="btn-primary" style={{ display: 'inline-flex', marginTop: 20 }}>Open Dashboard →</Link>
+                <h2>Ready to map your own data?</h2>
+                <p>Create a free account to instantly spin up your custom D1 tracker and see your real numbers.</p>
+                <Link to="/connect" className="btn-primary" style={{ display: 'inline-flex', marginTop: 20 }}>Get Started →</Link>
             </section>
 
             <footer className="landing-footer">
@@ -283,7 +283,7 @@ export default function Guide() {
                 <p className="footer-copy">© 2026 Adlens. Powered by Cloudflare Workers.</p>
                 <div className="footer-links">
                     <Link to="/">Home</Link>
-                    <Link to="/dashboard">Dashboard</Link>
+                    <Link to="/connect">Log In</Link>
                 </div>
             </footer>
         </div>

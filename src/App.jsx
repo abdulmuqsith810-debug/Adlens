@@ -12,18 +12,11 @@ import { WORKER_URL } from './config';
 
 // Guard: checks server for trial/subscription status on every load
 function DashboardGuard() {
-    const onboardingDone = localStorage.getItem('iq_onboarding_complete');
     const token = localStorage.getItem('iq_token');
 
-    // If onboarding not done at all, send to connect
-    if (!onboardingDone && !token) {
+    // If no token exists, immediately redirect to login/connect
+    if (!token) {
         return <Navigate to="/connect" replace />;
-    }
-
-    // If onboarding done but no token (demo mode or Worker not deployed yet)
-    // Allow access — this is the pre-backend demo state
-    if (onboardingDone && !token) {
-        return <Dashboard />;
     }
 
     return <AccessCheckedDashboard token={token} />;

@@ -38,7 +38,7 @@ export default function LandingPage() {
                         <Link to="/guide" className="btn-secondary">How It Works</Link>
                     </div>
                     <p className="hero-trust-note">
-                        🔒 Read-Only API access. We never request write permissions, never store your customers' names or emails, and never sell your data.
+                        🔒 Absolute Privacy. We actively encrypt your Stripe Key in our backend vault, only keep your merchant email to manage your account, never log your customers' names or emails, and strictly never sell your data.
                     </p>
                 </div>
 
