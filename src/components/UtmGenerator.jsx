@@ -33,7 +33,7 @@ const UTM_FORMATS = {
     }
 };
 
-export default function UtmGenerator({ platforms, token, onClose }) {
+export default function UtmGenerator({ token, onClose }) {
     const [copied, setCopied] = useState('');
 
     const handleCopy = (code) => {
@@ -56,11 +56,9 @@ export default function UtmGenerator({ platforms, token, onClose }) {
                 </div>
 
                 <div className="utm-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {platforms.map(p => {
-                        const fmt = UTM_FORMATS[p];
-                        if (!fmt) return null;
+                    {Object.values(UTM_FORMATS).map((fmt, idx) => {
                         return (
-                            <div key={p} className="utm-card" style={{ background: 'var(--surface-light)', border: '1px solid var(--border)', borderRadius: '8px', padding: '16px' }}>
+                            <div key={idx} className="utm-card" style={{ background: 'var(--surface-light)', border: '1px solid var(--border)', borderRadius: '8px', padding: '16px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                                     <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--primary)' }}>{fmt.name}</h3>
                                     <button 
