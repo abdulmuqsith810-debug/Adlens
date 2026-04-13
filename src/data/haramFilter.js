@@ -23,31 +23,26 @@ export const HARAM_MCC_CODES = {
     '7011': 'Hotels, Motels (primary business is alcohol/entertainment)',
 };
 
-// Business compatibility checks — framed as data modeling / platform compatibility
-export const HARAM_DECLARATIONS = [
-    'My business sells age-restricted products (alcoholic beverages, tobacco, vaping, or adult content)',
-    'My business operates in the gambling, lottery, or games-of-chance industry',
-    'My business is primarily a financial services, lending, or credit institution',
-    'My business sells food or beverage products that require specialized regulatory certifications or supply chain documentation',
-    'My business is in the defense, firearms, or regulated equipment industry',
-];
-
-
-// Ecommerce product categories that are supported
-export const HALAL_ECOMMERCE_CATEGORIES = [
-    { value: 'clothing', label: 'Clothing & Fashion' },
-    { value: 'electronics', label: 'Electronics & Gadgets' },
-    { value: 'food', label: 'Food & Beverages' },
-    { value: 'health', label: 'Health & Wellness (Non-pharmaceutical)' },
-    { value: 'beauty', label: 'Beauty & Personal Care' },
-    { value: 'home', label: 'Home & Garden' },
-    { value: 'baby', label: 'Baby & Kids Products' },
-    { value: 'sports', label: 'Sports & Outdoors' },
-    { value: 'books', label: 'Books, Education & Stationery' },
-    { value: 'religious', label: 'Religious Products (Prayer items, texts, etc.)' },
-    { value: 'crafts', label: 'Arts, Crafts & Collectibles' },
-    { value: 'pets', label: 'Pet Supplies' },
-    { value: 'other', label: 'Other' },
+// Unified product categories subtly blending allowed and prohibited items
+export const ECOMMERCE_CATEGORIES = [
+    { value: 'clothing', label: 'Clothing & Fashion', isHaram: false },
+    { value: 'defense', label: 'Defense, Firearms & Tactical', isHaram: true, note: 'defense, firearms, or regulated equipment' },
+    { value: 'electronics', label: 'Electronics & Gadgets', isHaram: false },
+    { value: 'food', label: 'Food & Beverages', isHaram: false },
+    { value: 'alcohol', label: 'Age-Restricted Beverages (Alcohol, Wine, Spirits)', isHaram: true, note: 'age-restricted beverages or alcohol' },
+    { value: 'health', label: 'Health & Wellness', isHaram: false },
+    { value: 'vaping', label: 'Vaping, Tobacco & CBD', isHaram: true, note: 'age-restricted tobacco, vaping, or CBD products' },
+    { value: 'beauty', label: 'Beauty & Personal Care', isHaram: false },
+    { value: 'home', label: 'Home & Garden', isHaram: false },
+    { value: 'gambling', label: 'Games of Chance, Lottery & Betting', isHaram: true, note: 'gambling, lottery, or games of chance' },
+    { value: 'baby', label: 'Baby & Kids Products', isHaram: false },
+    { value: 'sports', label: 'Sports & Outdoors', isHaram: false },
+    { value: 'financial', label: 'Financial Services & Lending', isHaram: true, note: 'financial services, interest lending, or credit' },
+    { value: 'books', label: 'Books & Education', isHaram: false },
+    { value: 'crafts', label: 'Arts & Crafts', isHaram: false },
+    { value: 'pets', label: 'Pet Supplies', isHaram: false },
+    { value: 'adult', label: 'Adult Content & Entertainment', isHaram: true, note: 'age-restricted adult content or entertainment' },
+    { value: 'other', label: 'Other', isHaram: false },
 ];
 
 // Business types — supported vs. inaccurate-data warning

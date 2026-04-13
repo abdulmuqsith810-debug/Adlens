@@ -33,7 +33,7 @@ const UTM_FORMATS = {
     }
 };
 
-export default function UtmGenerator({ platforms, onClose }) {
+export default function UtmGenerator({ platforms, token, onClose }) {
     const [copied, setCopied] = useState('');
 
     const handleCopy = (code) => {
@@ -64,14 +64,14 @@ export default function UtmGenerator({ platforms, onClose }) {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                                     <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--primary)' }}>{fmt.name}</h3>
                                     <button 
-                                        onClick={() => handleCopy(fmt.code)}
+                                        onClick={() => handleCopy(`${fmt.code}&adlens_id=${token.slice(0, 8)}`)}
                                         style={{ background: 'var(--primary)', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
                                     >
                                         {copied === fmt.code ? 'Copied! ✅' : 'Copy'}
                                     </button>
                                 </div>
                                 <code style={{ display: 'block', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', fontSize: '13px', color: '#a78bfa', wordBreak: 'break-all', marginBottom: '10px', userSelect: 'all' }}>
-                                    {fmt.code}
+                                    {fmt.code}&amp;adlens_id={token.slice(0, 8)}
                                 </code>
                                 <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
                                     💡 <strong>Where to place:</strong> {fmt.instruction}

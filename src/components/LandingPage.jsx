@@ -35,7 +35,8 @@ export default function LandingPage() {
                     </div>
                     <div className="hero-actions">
                         <a href="#pricing" className="btn-primary">View Pricing (14-Day Free Trial)</a>
-                        <Link to="/guide" className="btn-secondary">How It Works</Link>
+                        <Link to="/demo" className="btn-secondary" style={{ background: 'rgba(255,255,255,0.1)' }}>View Live Demo</Link>
+                        <Link to="/guide" className="btn-secondary" style={{ border: 'none' }}>How It Works</Link>
                     </div>
                     <p className="hero-trust-note">
                         🔒 Absolute Privacy. We actively encrypt your Stripe Key in our backend vault, only keep your merchant email to manage your account, never log your customers' names or emails, and strictly never sell your data.

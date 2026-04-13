@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-    HARAM_DECLARATIONS,
-    HALAL_ECOMMERCE_CATEGORIES,
+    ECOMMERCE_CATEGORIES,
     BUSINESS_TYPES,
     isMCCBlocked,
     getMCCLabel,
@@ -61,7 +60,6 @@ function InaccurateWarningScreen({ businessType, onAccept }) {
 const STEPS = {
     BUSINESS_TYPE: 1,
     ECOMMERCE_DETAIL: 2,
-    HARAM_CHECK: 3,
 };
 
 export default function Onboarding() {
@@ -71,9 +69,6 @@ export default function Onboarding() {
     const [businessType, setBusinessType] = useState('');
     const [productCategories, setProductCategories] = useState([]);
     const [domainName, setDomainName] = useState('');
-    const [declarations, setDeclarations] = useState(
-        HARAM_DECLARATIONS.map(() => false)
-    );
     const [blockReason, setBlockReason] = useState(null);
     const [showWarning, setShowWarning] = useState(false);
     const [errors, setErrors] = useState({});
@@ -89,7 +84,7 @@ export default function Onboarding() {
         if (businessType === 'ecommerce') {
             setStep(STEPS.ECOMMERCE_DETAIL);
         } else {
-            setStep(STEPS.HARAM_CHECK);
+            handleFinalSubmit();
         }
     }
 
@@ -106,21 +101,21 @@ export default function Onboarding() {
         if (!domainName.trim()) newErrors.domain = 'Please enter your store domain name.';
         if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
         setErrors({});
-        setStep(STEPS.HARAM_CHECK);
-    }
 
-    // ── Step 3: Haram Declaration ──
-    function toggleDeclaration(i) {
-        setDeclarations(prev => prev.map((v, idx) => idx === i ? !v : v));
+        // Evaluate Haram block right here seamlessly
+        const blockedCategories = productCategories.map(val => ECOMMERCE_CATEGORIES.find(c => c.value === val))
+                                                   .filter(c => c && c.isHaram);
+                                                   
+        if (blockedCategories.length > 0) {
+            // Block them immediately without explaining it's a moral block
+            setBlockReason(`You indicated your store processes data related to ${blockedCategories[0].note}. Our data modeling engine is unable to provide accurate services to businesses in this specialized category.`);
+            return;
+        }
+
+        handleFinalSubmit();
     }
 
     function handleFinalSubmit() {
-        // If any declaration is checked → blocked
-        const checkedItem = declarations.findIndex(v => v);
-        if (checkedItem !== -1) {
-            setBlockReason(`You indicated that: "${HARAM_DECLARATIONS[checkedItem]}". We are unable to provide services to businesses in this category.`);
-            return;
-        }
 
         // Check if business type needs a warning
         const type = BUSINESS_TYPES.find(b => b.value === businessType);
@@ -167,7 +162,7 @@ export default function Onboarding() {
 
                 {/* Progress */}
                 <div className="onboarding-progress">
-                    {['Business Type', 'Product Detail', 'Final Check'].map((label, i) => {
+                    {['Business Type', 'Store Profile'].map((label, i) => {
                         const num = i + 1;
                         const isActive = step === num;
                         const isDone = step > num;
@@ -216,7 +211,7 @@ export default function Onboarding() {
                         <p className="onboarding-subtitle">Select all that apply. This helps us verify your store is compatible with our platform.</p>
 
                         <div className="onboarding-checkgrid">
-                            {HALAL_ECOMMERCE_CATEGORIES.map(cat => (
+                            {ECOMMERCE_CATEGORIES.map(cat => (
                                 <label key={cat.value} className={`check-card ${productCategories.includes(cat.value) ? 'selected' : ''}`}>
                                     <input
                                         type="checkbox"
@@ -251,45 +246,7 @@ export default function Onboarding() {
                     </div>
                 )}
 
-                {/* ── Step 3: Data Compatibility Declaration ── */}
-                {step === STEPS.HARAM_CHECK && (
-                    <div className="onboarding-card">
-                        <h2 className="onboarding-title">Platform Compatibility Check</h2>
-                        <p className="onboarding-subtitle">
-                            Adlens's attribution model is built specifically for direct-to-consumer product businesses. Please check any statements that apply to your business — these categories require specialist analytics platforms and our model may produce unreliable results for them.
-                        </p>
-
-                        <div className="declaration-notice">
-                            📋 <strong>This information is used to ensure our system produces accurate results for your account.</strong> Mismatched business categories lead to incorrect attribution data and we want to avoid that for you.
-                        </div>
-
-                        <div className="declaration-list">
-                            {HARAM_DECLARATIONS.map((item, i) => (
-                                <label key={i} className={`declaration-item ${declarations[i] ? 'declared' : ''}`}>
-                                    <input
-                                        type="checkbox"
-                                        checked={declarations[i]}
-                                        onChange={() => toggleDeclaration(i)}
-                                        className="declaration-checkbox"
-                                    />
-                                    <span>{item}</span>
-                                </label>
-                            ))}
-                        </div>
-
-                        <div className="stripe-note">
-                            <span>🔗</span>
-                            <p>When you connect your Stripe account, we automatically verify your Merchant Category Code (MCC) for data model compatibility. Unsupported business categories will not be able to load the dashboard.</p>
-                        </div>
-
-                        <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
-                            <button className="btn-secondary" onClick={() => setStep(businessType === 'ecommerce' ? STEPS.ECOMMERCE_DETAIL : STEPS.BUSINESS_TYPE)}>← Back</button>
-                            <button className="btn-primary onboarding-btn" onClick={handleFinalSubmit}>
-                                Submit & Open Dashboard →
-                            </button>
-                        </div>
-                    </div>
-                )}
+                {/* Removed Step 3 entire JSX Block since logic was merged into handleEcommerceNext */}
             </div>
         </div>
     );

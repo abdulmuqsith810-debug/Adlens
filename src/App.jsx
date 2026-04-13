@@ -51,6 +51,7 @@ function App() {
                 <Route path="/connect" element={<ConnectApis />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/dashboard" element={<DashboardGuard />} />
+                <Route path="/demo" element={<Dashboard />} />
             </Routes>
         </BrowserRouter>
     );

@@ -61,7 +61,8 @@ const PlatformGraph = ({ platform, data, title }) => {
     const chartData = data.map(d => ({
         timeLabel: d.timeLabel,
         visits: d[`${platform}Visits`] || 0,
-        revenue: d.revenue,
+        revenue: d.revenue,                          // total line (context)
+        attributedRevenue: d[`${platform}Revenue`] || 0, // platform's share
     }));
 
     const maxVisits = Math.max(...chartData.map(d => d.visits));
@@ -80,7 +81,7 @@ const PlatformGraph = ({ platform, data, title }) => {
                         {chartData.reduce((s, d) => s + d.visits, 0).toLocaleString()} visits
                     </span>
                     <span className="stat-pill revenue-pill">
-                        ${chartData.reduce((s, d) => s + d.revenue, 0).toLocaleString()} rev
+                        ${chartData.reduce((s, d) => s + d.attributedRevenue, 0).toLocaleString()} attributed rev
                     </span>
                 </div>
             </div>

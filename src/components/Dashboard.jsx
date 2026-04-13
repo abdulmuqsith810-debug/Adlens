@@ -95,7 +95,7 @@ export default function Dashboard() {
                 const res = await fetch(`${WORKER_URL}/api/analytics`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token, range: timeRange })
+                    body: JSON.stringify({ token, range: timeRange, date })
                 });
 
                 if (!res.ok) {
@@ -112,7 +112,7 @@ export default function Dashboard() {
         };
 
         fetchAnalytics();
-    }, [timeRange]);
+    }, [timeRange, date]);
 
     const data = useMemo(() => {
         if (!apiData?.Overall) return [];
@@ -175,10 +175,10 @@ export default function Dashboard() {
                             localStorage.removeItem('iq_email');
                             window.location.href = '/connect';
                         }}
-                        title="Disconnect APIs & Logout"
+                        title="Log Out"
                         style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem', marginLeft: '10px' }}
                     >
-                        Disconnect
+                        Log Out
                     </button>
                 </div>
             </header>
@@ -288,6 +288,7 @@ export default function Dashboard() {
                     {showUtm && (
                         <UtmGenerator 
                             platforms={apiData?.platforms || ['meta', 'google']}
+                            token={localStorage.getItem('iq_token') || 'demo_user'}
                             onClose={() => setShowUtm(false)}
                         />
                     )}
