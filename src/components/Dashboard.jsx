@@ -58,12 +58,69 @@ function RegionSelector({ active, onChange }) {
     );
 }
 
+const TUTORIAL_STEPS = [
+    {
+        title: "Welcome to Adlens 🚀",
+        text: "This is exactly what your dashboard will look like when live. The data here changes mathematically based on the Region and Time Range you select.\n\nLet's walk through how to actually USE this data to make money.",
+    },
+    {
+        title: "Step 1: The Platform Graphs 📊",
+        text: "Look at the graphs below. The shaded area is 'Visits' (How many clicks you paid for). The yellow line is 'Revenue' (How much Stripe actually collected from those specific clicks).\n\n💡 DECISION RULE: If the yellow line drops way below the shaded area, you are paying for window-shoppers. Turn that ad off! If the line is higher than the shaded area, SCALE YOUR BUDGET.",
+    },
+    {
+        title: "Step 2: Spend Efficiency 💸",
+        text: "Scroll down to 'Spend Efficiency'. This is the magic. We take your True Attributed Revenue from Stripe directly, divide by your Ad Spend, and give you your True Spend Efficiency Score.\n\n💡 DECISION RULE: If the Spend Efficiency is green (above 1.5x), increase your daily budget safely! If it turns red, pull back.",
+    },
+    {
+        title: "Step 3: Region Tracking 🌍",
+        text: "Click the 'United States' or 'United Kingdom' tabs on the left menu. Notice how the graphs instantly change to regional data?\n\nNo setup is required. Our Cloudflare system tracks regional probability mathematically in the background on every link click.",
+    }
+];
+
+function generateDemoData(timeRange) {
+    const isDay = timeRange === 'day';
+    const points = isDay ? 24 : 7;
+    const baseData = {};
+
+    REGIONS.forEach(reg => {
+        const regionMultiplier = reg === 'Overall' ? 1.0 : (reg === 'United States' ? 0.6 : (reg === 'United Kingdom' ? 0.25 : 0.05));
+        const arr = [];
+        
+        for (let i = 0; i < points; i++) {
+            const trafficWave = Math.max(0, Math.sin((i - 8) * Math.PI / (points / 2))) + 0.5; 
+            
+            const metaBase = Math.floor(trafficWave * 400 * regionMultiplier) + Math.floor(Math.random() * 50);
+            const googleBase = Math.floor(trafficWave * 250 * regionMultiplier) + Math.floor(Math.random() * 30);
+            const tiktokBase = Math.floor(trafficWave * 600 * regionMultiplier) + Math.floor(Math.random() * 80);
+
+            const metaRev = metaBase * 0.8;
+            const googleRev = googleBase * 1.5;
+            const tiktokRev = tiktokBase * 0.2;
+
+            arr.push({
+                timeLabel: isDay ? `${String(i).padStart(2, '0')}:00` : `Day ${i+1}`,
+                revenue: Math.floor(metaRev + googleRev + tiktokRev) + Math.floor(Math.random() * 100),
+                metaVisits: metaBase,
+                googleVisits: googleBase,
+                tiktokVisits: tiktokBase,
+                metaRevenue: Math.floor(metaRev),
+                googleRevenue: Math.floor(googleRev),
+                tiktokRevenue: Math.floor(tiktokRev)
+            });
+        }
+        baseData[reg] = arr;
+    });
+
+    return { platforms: ['meta', 'google', 'tiktok'], ...baseData };
+}
+
 export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
     const [region, setRegion] = useState('Overall');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [timeRange, setTimeRange] = useState('day');
     const [theme, setTheme] = useState('dark');
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [tutorialStep, setTutorialStep] = useState(0);
 
     const [apiData, setApiData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -79,15 +136,7 @@ export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
                 const token = !isDemo ? localStorage.getItem('iq_token') : null;
                 if (!token || isDemo) {
                     // No session — show beautiful demo data
-                    setApiData({
-                        platforms: ['meta', 'google'],
-                        Overall: [
-                            { timeLabel: 'Today 08:00', revenue: 120, metaVisits: 80, googleVisits: 45, metaRevenue: 50, googleRevenue: 70 },
-                            { timeLabel: 'Today 12:00', revenue: 450, metaVisits: 320, googleVisits: 140, metaRevenue: 300, googleRevenue: 150 },
-                            { timeLabel: 'Today 16:00', revenue: 890, metaVisits: 560, googleVisits: 420, metaRevenue: 500, googleRevenue: 390 },
-                            { timeLabel: 'Today 20:00', revenue: 640, metaVisits: 410, googleVisits: 310, metaRevenue: 380, googleRevenue: 260 }
-                        ]
-                    });
+                    setApiData(generateDemoData(timeRange));
                     setLoading(false);
                     return;
                 }
@@ -298,6 +347,17 @@ export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
                             token={localStorage.getItem('iq_token')}
                             onClose={() => setShowPixelDeployer(false)}
                         />
+                    )}
+
+                    {isDemo && tutorialStep < TUTORIAL_STEPS.length && (
+                        <div style={{ position: 'fixed', zIndex: 9999, bottom: '40px', right: '40px', background: 'var(--surface)', border: '2px solid var(--primary)', borderRadius: '12px', padding: '24px', width: '380px', boxShadow: '0 20px 40px rgba(0,0,0,0.8)' }}>
+                            <h3 style={{ marginTop: 0, color: 'var(--text)', fontSize: '18px' }}>{TUTORIAL_STEPS[tutorialStep].title}</h3>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{TUTORIAL_STEPS[tutorialStep].text}</p>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                                <button onClick={() => setTutorialStep(s => s - 1)} disabled={tutorialStep === 0} style={{ background: 'transparent', border: '1px solid var(--border)', color: tutorialStep === 0 ? 'var(--text-muted)' : 'var(--text)', padding: '6px 12px', borderRadius: '4px', cursor: tutorialStep === 0 ? 'not-allowed' : 'pointer' }}>Back</button>
+                                <button onClick={() => setTutorialStep(s => s + 1)} style={{ background: 'var(--primary)', color: '#000', border: 'none', padding: '6px 16px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>{tutorialStep === TUTORIAL_STEPS.length - 1 ? 'Finish Tutorial' : 'Next →'}</button>
+                            </div>
+                        </div>
                     )}
 
                     {/* Footer */}
