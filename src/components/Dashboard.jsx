@@ -58,7 +58,7 @@ function RegionSelector({ active, onChange }) {
     );
 }
 
-export default function Dashboard() {
+export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
     const [region, setRegion] = useState('Overall');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [timeRange, setTimeRange] = useState('day');
@@ -76,8 +76,8 @@ export default function Dashboard() {
             setLoading(true);
             setError('');
             try {
-                const token = localStorage.getItem('iq_token');
-                if (!token) {
+                const token = !isDemo ? localStorage.getItem('iq_token') : null;
+                if (!token || isDemo) {
                     // No session — show beautiful demo data
                     setApiData({
                         platforms: ['meta', 'google'],

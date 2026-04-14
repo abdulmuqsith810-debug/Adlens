@@ -55,6 +55,13 @@ export default function UtmGenerator({ token, onClose }) {
                     <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '24px', cursor: 'pointer' }}>×</button>
                 </div>
 
+                <div style={{ padding: '16px', background: 'rgba(35, 197, 82, 0.1)', borderLeft: '4px solid #23C552', borderRadius: '4px', marginBottom: '24px' }}>
+                    <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#23C552' }}>💡 Why are these links necessary?</h3>
+                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                        Ad networks refuse to share customer data with each other. A "UTM Parameter" is simply an invisible tag that gets glued to your website address when someone clicks an ad. By pasting these exact formats into your Ads Manager, you force the ad networks to pass the "source" and "campaign name" directly into your Adlens Pixel. <strong>Without these, Adlens cannot credit your sales back to the specific ads!</strong>
+                    </p>
+                </div>
+                
                 <div className="utm-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {Object.values(UTM_FORMATS).map((fmt, idx) => {
                         return (
