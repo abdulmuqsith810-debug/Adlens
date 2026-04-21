@@ -10,6 +10,21 @@ export default function ConnectApis() {
     const [password, setPassword] = useState('');
     const [stripeKey, setStripeKey] = useState('');
     const [platforms, setPlatforms] = useState({ meta: true, google: true, tiktok: false, snapchat: false, pinterest: false, linkedin: false });
+
+    function switchToLogin() {
+        setIsLogin(true);
+        setErrors({});
+        setServerError('');
+        // Don't carry over signup-only fields when viewing the login form
+        setStripeKey('');
+        setPlatforms({ meta: true, google: true, tiktok: false, snapchat: false, pinterest: false, linkedin: false });
+    }
+
+    function switchToSignup() {
+        setIsLogin(false);
+        setErrors({});
+        setServerError('');
+    }
     
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -94,13 +109,13 @@ export default function ConnectApis() {
                 <div className="onboarding-card" style={{ width: '100%', maxWidth: '520px' }}>
                     <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', marginBottom: '24px' }}>
                         <button 
-                            onClick={() => { setIsLogin(false); setErrors({}); setServerError(''); }}
+                            onClick={switchToSignup}
                             style={{ flex: 1, padding: '16px', background: 'transparent', border: 'none', borderBottom: !isLogin ? '3px solid var(--primary)' : '3px solid transparent', color: !isLogin ? 'var(--primary)' : 'var(--text-muted)', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}
                         >
                             Sign Up
                         </button>
                         <button 
-                            onClick={() => { setIsLogin(true); setErrors({}); setServerError(''); }}
+                            onClick={switchToLogin}
                             style={{ flex: 1, padding: '16px', background: 'transparent', border: 'none', borderBottom: isLogin ? '3px solid var(--primary)' : '3px solid transparent', color: isLogin ? 'var(--primary)' : 'var(--text-muted)', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}
                         >
                             Log In

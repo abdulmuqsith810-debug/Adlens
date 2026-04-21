@@ -17,20 +17,22 @@ export default function TrialExpired() {
             </div>
 
             <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-                {/* TODO: Replace href below with your real xFlow payment URL */}
                 <a
-                    href="#"
-                    onClick={e => { e.preventDefault(); alert('Payment link not configured yet. Please contact Adlens support.'); }}
+                    href="https://buy.stripe.com/adlens_placeholder"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn-primary"
                     style={{ padding: '14px 40px', fontSize: '15px', textDecoration: 'none' }}
                 >
                     Subscribe — $29/month →
                 </a>
-                <Link to="/" className="btn-secondary" style={{ fontSize: '13px' }}>
-                    ← Back to Home
+                <Link to="/connect" className="btn-secondary" style={{ fontSize: '13px' }}>
+                    ← Back to Login
                 </Link>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: 420, textAlign: 'center', lineHeight: 1.6 }}>
-                    After payment, your access is restored immediately for 30 days from the payment date — not a calendar month.
+                    After payment, your access is restored within minutes. 30 days from payment date — not a calendar month.
+                    <br /><br />
+                    <strong style={{ color: 'var(--text)' }}>Need help?</strong> Email us at <a href="mailto:support@adlens.app" style={{ color: 'var(--accent)' }}>support@adlens.app</a>
                 </p>
             </div>
         </div>

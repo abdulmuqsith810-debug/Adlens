@@ -9,7 +9,7 @@ const REGIONS = ['Overall', 'United States', 'United Kingdom', 'Canada', 'Austra
 
 function getSummary(data, platforms = ['meta', 'google']) {
     if (!data || data.length === 0) {
-        return { totalRevenue: 0, platformStats: {}, peakRevenueLabel: 'N/A' };
+        return { totalRevenue: 0, totalVisits: 0, platformStats: {}, peakRevenueLabel: 'N/A' };
     }
     
     const summary = {
@@ -27,7 +27,7 @@ function getSummary(data, platforms = ['meta', 'google']) {
         allVisits += visits;
     });
 
-    summary.totalVisits = Math.max(allVisits, 1);
+    summary.totalVisits = allVisits;
     
     return summary;
 }
@@ -42,21 +42,6 @@ function SummaryCard({ label, value, sub, accent }) {
     );
 }
 
-function RegionSelector({ active, onChange }) {
-    return (
-        <div className="region-selector">
-            {REGIONS.map(r => (
-                <button
-                    key={r}
-                    onClick={() => onChange(r)}
-                    className={`region-btn ${active === r ? 'active' : ''}`}
-                >
-                    {r}
-                </button>
-            ))}
-        </div>
-    );
-}
 
 const TUTORIAL_STEPS = [
     {
@@ -116,7 +101,10 @@ function generateDemoData(timeRange) {
 
 export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
     const [region, setRegion] = useState('Overall');
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [date, setDate] = useState(() => {
+        // Use local date (not UTC) so users in non-UTC timezones see today's date correctly
+        return new Date().toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD format
+    });
     const [timeRange, setTimeRange] = useState('day');
     const [theme, setTheme] = useState('dark');
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -130,12 +118,18 @@ export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
 
     useEffect(() => {
         const fetchAnalytics = async () => {
+            // In demo mode, always use generated data — never hit the network
+            if (isDemo) {
+                setApiData(generateDemoData(timeRange));
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             setError('');
             try {
-                const token = !isDemo ? localStorage.getItem('iq_token') : null;
-                if (!token || isDemo) {
-                    // No session — show beautiful demo data
+                const token = localStorage.getItem('iq_token');
+                if (!token) {
                     setApiData(generateDemoData(timeRange));
                     setLoading(false);
                     return;
@@ -161,7 +155,7 @@ export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
         };
 
         fetchAnalytics();
-    }, [timeRange, date]);
+    }, [timeRange, date, isDemo]);
 
     const data = useMemo(() => {
         if (!apiData?.Overall) return [];
@@ -171,6 +165,23 @@ export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
 
     return (
         <div className={`dashboard ${theme} ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+            {/* Trial: days remaining banner */}
+            {trialStatus === 'trial' && daysLeft > 0 && (
+                <div style={{ background: 'rgba(255, 179, 0, 0.12)', borderBottom: '1px solid rgba(255, 179, 0, 0.3)', padding: '8px 32px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, fontSize: 13 }}>
+                    <span>⏳</span>
+                    <span style={{ color: '#FFB300', fontWeight: 600 }}>Free Trial:</span>
+                    <span style={{ color: 'var(--text)' }}><strong>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong> remaining.</span>
+                    <a href="mailto:support@adlens.app" style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'none', fontSize: 12 }}>Subscribe →</a>
+                </div>
+            )}
+            {/* Demo mode banner */}
+            {isDemo && (
+                <div style={{ background: 'rgba(167,139,250,0.10)', borderBottom: '1px solid rgba(167,139,250,0.25)', padding: '8px 32px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, fontSize: 13 }}>
+                    <span style={{ color: 'var(--accent)', fontWeight: 600 }}>📊 DEMO MODE</span>
+                    <span style={{ color: 'var(--text-muted)' }}>— You're viewing generated sample data, not real analytics.</span>
+                    <a href="/connect" style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'none', fontSize: 12 }}>Start Free Trial →</a>
+                </div>
+            )}
             {/* Header */}
             <header className="dash-header">
                 <div className="header-left">
@@ -220,8 +231,11 @@ export default function Dashboard({ daysLeft, trialStatus, isDemo }) {
                         className="disconnect-btn"
                         onClick={() => {
                             localStorage.removeItem('iq_token');
-                            localStorage.removeItem('iq_stripe_key');
                             localStorage.removeItem('iq_email');
+                            localStorage.removeItem('iq_platforms');
+                            localStorage.removeItem('iq_onboarding_complete');
+                            localStorage.removeItem('iq_onboarding_data');
+                            localStorage.removeItem('iq_business_type');
                             window.location.href = '/connect';
                         }}
                         title="Log Out"

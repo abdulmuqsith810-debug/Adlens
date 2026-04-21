@@ -36,9 +36,9 @@ const UTM_FORMATS = {
 export default function UtmGenerator({ token, onClose }) {
     const [copied, setCopied] = useState('');
 
-    const handleCopy = (code) => {
+    const handleCopy = (key, code) => {
         navigator.clipboard.writeText(code);
-        setCopied(code);
+        setCopied(key);
         setTimeout(() => setCopied(''), 2000);
     };
 
@@ -63,16 +63,16 @@ export default function UtmGenerator({ token, onClose }) {
                 </div>
                 
                 <div className="utm-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {Object.values(UTM_FORMATS).map((fmt, idx) => {
+                    {Object.entries(UTM_FORMATS).map(([key, fmt]) => {
                         return (
-                            <div key={idx} className="utm-card" style={{ background: 'var(--surface-light)', border: '1px solid var(--border)', borderRadius: '8px', padding: '16px' }}>
+                            <div key={key} className="utm-card" style={{ background: 'var(--surface-light)', border: '1px solid var(--border)', borderRadius: '8px', padding: '16px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                                     <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--primary)' }}>{fmt.name}</h3>
                                     <button 
-                                        onClick={() => handleCopy(`${fmt.code}&adlens_id=${token.slice(0, 8)}`)}
+                                        onClick={() => handleCopy(key, `${fmt.code}&adlens_id=${token.slice(0, 8)}`)}
                                         style={{ background: 'var(--primary)', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
                                     >
-                                        {copied === fmt.code ? 'Copied! ✅' : 'Copy'}
+                                        {copied === key ? 'Copied! ✅' : 'Copy'}
                                     </button>
                                 </div>
                                 <code style={{ display: 'block', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', fontSize: '13px', color: '#a78bfa', wordBreak: 'break-all', marginBottom: '10px', userSelect: 'all' }}>

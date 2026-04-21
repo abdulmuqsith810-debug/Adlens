@@ -131,6 +131,12 @@ export default function Onboarding() {
     function proceedToDashboard() {
         localStorage.setItem('iq_onboarding_complete', 'true');
         localStorage.setItem('iq_business_type', businessType);
+        // Write the full onboarding data so ConnectApis can send it to the backend on register
+        localStorage.setItem('iq_onboarding_data', JSON.stringify({
+            businessType,
+            domain: domainName,
+            productCategories,
+        }));
         navigate('/dashboard');
     }
 

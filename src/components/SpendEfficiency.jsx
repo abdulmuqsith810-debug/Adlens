@@ -48,6 +48,32 @@ export default function SpendEfficiency({ region, summary, platforms = [] }) {
     const runnerUp = sorted.length > 1 ? sorted[1] : null;
     const hasResults = sorted.length > 0;
 
+    // Predictive Algorithm — based purely on ROAS (revenue per dollar spent)
+    const predictions = useMemo(() => {
+        return metrics.map(m => {
+            if (m.rpd > 0 && m.rpd < 1.0) {
+                // For every $1 spent, you get back $rpd — so loss per dollar = (1 - rpd)
+                const dailyLoss = m.spend * (1 - m.rpd);
+                const weeklyLoss = dailyLoss * 7;
+                return {
+                    platform: m.title,
+                    type: 'loss',
+                    message: `🚨 WARNING: At a ROAS of ${m.rpd.toFixed(2)}x, ${m.title} is losing $${dailyLoss.toFixed(0)} today and is projected to lose $${Math.floor(weeklyLoss).toLocaleString()} over 7 days. Consider pausing this campaign.`
+                };
+            } else if (m.rpd >= 1.5) {
+                // Increase spend 20% — project the incremental profit from that extra spend
+                const extraSpend = m.spend * 0.20;
+                const extraProfit = extraSpend * (m.rpd - 1);
+                return {
+                    platform: m.title,
+                    type: 'profit',
+                    message: `📈 SCALE SIGNAL: ${m.title} is returning ${m.rpd.toFixed(2)}x ROAS. Increasing spend by 20% (+$${Math.floor(extraSpend).toLocaleString()}/day) is projected to yield $${Math.floor(extraProfit).toLocaleString()} extra net profit per day.`
+                };
+            }
+            return null;
+        }).filter(Boolean);
+    }, [metrics]);
+
     return (
         <div className="spend-efficiency">
             <div className="spend-header">
@@ -109,6 +135,17 @@ export default function SpendEfficiency({ region, summary, platforms = [] }) {
             {winner && runnerUp && winner.vpd > 0 && runnerUp.vpd > 0 && (
                 <div className="spend-insight">
                     💡 <strong>Insight:</strong> {winner.title} is returning <strong>{(winner.vpd / runnerUp.vpd).toFixed(1)}x</strong> more visits per dollar than {runnerUp.title}. Consider shifting budget to {winner.title} for {region}.
+                </div>
+            )}
+
+            {hasResults && predictions.length > 0 && (
+                <div className="predictions-container" style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <h4 style={{ color: 'var(--text)', margin: '0 0 5px 0' }}>🤖 AI Future Prediction Model</h4>
+                    {predictions.map((p, idx) => (
+                        <div key={idx} className={`prediction-alert ${p.type}`} style={{ padding: '15px', borderRadius: '8px', background: p.type === 'loss' ? 'rgba(255, 77, 77, 0.1)' : 'rgba(35, 197, 82, 0.1)', borderLeft: `4px solid ${p.type === 'loss' ? '#ff4d4d' : '#23C552'}`, color: 'var(--text-light)', fontSize: '14px', lineHeight: 1.5 }}>
+                            {p.message}
+                        </div>
+                    ))}
                 </div>
             )}
 

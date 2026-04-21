@@ -248,7 +248,7 @@ export default function Guide() {
                         <div className="guide-scenario-body">
                             <div className="guide-scenario-visual">
                                 <p className="guide-visual-label">What it looks like in the dashboard:</p>
-                                <s.visual />
+                                {s.visual()}
                             </div>
                             <div className="guide-scenario-text">
                                 <div className="guide-step-block">

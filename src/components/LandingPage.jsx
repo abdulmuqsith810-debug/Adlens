@@ -207,7 +207,7 @@ export default function LandingPage() {
                             <li>✅ Hourly & Daily views</li>
                             <li>✅ Ad spend efficiency tracker</li>
                         </ul>
-                        <a href="#xflow-checkout" className="btn-primary pricing-btn">Subscribe via xFlow</a>
+                        <Link to="/connect" className="btn-primary pricing-btn">Start Free Trial →</Link>
                     </div>
                 </div>
             </section>
@@ -221,7 +221,7 @@ export default function LandingPage() {
                 <p className="footer-copy">© 2026 Adlens. Powered by Cloudflare Workers.</p>
                 <div className="footer-links">
                     <Link to="/guide">Guide</Link>
-                    <a href="#privacy">Privacy Policy</a>
+                    <a href="mailto:support@adlens.app">Contact</a>
                     <Link to="/dashboard">Dashboard</Link>
                 </div>
             </footer>

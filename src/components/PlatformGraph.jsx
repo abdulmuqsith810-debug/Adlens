@@ -67,7 +67,9 @@ const PlatformGraph = ({ platform, data, title }) => {
 
     const maxVisits = Math.max(...chartData.map(d => d.visits));
     const maxRevenue = Math.max(...chartData.map(d => d.revenue));
-    const avgRevenue = Math.round(chartData.reduce((s, d) => s + d.revenue, 0) / chartData.length);
+    const avgRevenue = chartData.length > 0
+        ? Math.round(chartData.reduce((s, d) => s + d.revenue, 0) / chartData.length)
+        : 0;
 
     return (
         <div className="platform-graph-card">
